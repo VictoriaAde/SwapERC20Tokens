@@ -44,11 +44,7 @@ describe("TokenSwap", function () {
       const { tokenSwap, vickishToken, seyiToken, otherAccount, owner } =
         await loadFixture(deploySwapContractandTokens);
 
-      // need to approve contract to spend
-      console.log(tokenSwap.target);
-
       // Approve contract to spend amount of tokens
-      // await vickishToken.connect(otherAccount).approve(tokenSwap.target, 200);
       await vickishToken.approve(tokenSwap.target, 200);
       await seyiToken.approve(tokenSwap.target, 200);
 
@@ -67,10 +63,10 @@ describe("TokenSwap", function () {
         await tokenSwap.checkContractBalanceOfvickishToken();
       const contractBalSeyi = await tokenSwap.checkContractBalanceOfseyiToken();
 
-      console.log("userBalVickish", userBalVickish);
-      console.log("userBalSeyi", userBalSeyi);
-      console.log("contractBalVickish", contractBalVickish);
-      console.log("contractBalSeyi", contractBalSeyi);
+      // console.log("userBalVickish", userBalVickish);
+      // console.log("userBalSeyi", userBalSeyi);
+      // console.log("contractBalVickish", contractBalVickish);
+      // console.log("contractBalSeyi", contractBalSeyi);
 
       // approve contract to spend money from otherAccount which is msg.sender
       await vickishToken.connect(otherAccount).approve(tokenSwap.target, 200);
@@ -81,14 +77,18 @@ describe("TokenSwap", function () {
         .swapVickishToken(100);
 
       // check user bal for seyitoken to check if it was swapped successfully
-      const swapped = await tokenSwap.checkUserBalOfseyiToken(otherAccount);
-      expect(swapped).to.be.equal(100);
+      const balOfSeyiToken = await tokenSwap.checkUserBalOfseyiToken(
+        otherAccount
+      );
+      const balOfVickishToken = await tokenSwap.checkUserBalOfvickishToken(
+        otherAccount
+      );
 
       // expect user's bal of seyitoken to be equal the swapped amount
-      // console.log("swapped", swapped);
+      expect(balOfSeyiToken).to.be.equal(100);
 
-      // console.log("userBalVickish", userBalVickish);
-      // console.log("userBalSeyi", userBalSeyi);
+      console.log("balOfSeyiToken", balOfSeyiToken);
+      console.log("balOfVickishToken", balOfVickishToken);
     });
   });
 });
