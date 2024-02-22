@@ -106,5 +106,28 @@ describe("TokenSwap", function () {
         "Not enough vickishToken in contract"
       );
     });
+
+    it("Should revert if not enough vickish token in user's bal", async function () {
+      const { tokenSwap, vickishToken, seyiToken, otherAccount, owner } =
+        await loadFixture(deploySwapContractandTokens);
+
+      // Approve contract to spend amount of tokens
+      await vickishToken.approve(tokenSwap.target, 200);
+      await seyiToken.approve(tokenSwap.target, 200);
+
+      // Put amount into token pool of contract
+      await tokenSwap.poolVickish(200);
+      await tokenSwap.poolSeyi(200);
+
+      const userBalVickish = await tokenSwap.checkUserBalOfvickishToken(
+        otherAccount
+      );
+
+      const swapVickish = tokenSwap.connect(otherAccount).swapVickishToken(100);
+
+      await expect(swapVickish).to.be.revertedWith(
+        "You do not have  enougn Vickish tokens for this transaction"
+      );
+    });
   });
 });
