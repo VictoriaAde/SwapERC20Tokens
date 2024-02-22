@@ -142,4 +142,40 @@ describe("TokenSwap", function () {
       expect(swapVickish).to.be.revertedWithCustomError;
     });
   });
+  describe("swapSeyiToken", function () {
+    it("Should successfully swap seyi token to Vickish", async function () {
+      const { tokenSwap, vickishToken, seyiToken, otherAccount, owner } =
+        await loadFixture(deploySwapContractandTokens);
+
+      // Approve contract to spend amount of tokens
+      await seyiToken.approve(tokenSwap.target, 200);
+      await vickishToken.approve(tokenSwap.target, 200);
+
+      // Put amount into token pool of contract
+      await tokenSwap.poolSeyi(200);
+      await tokenSwap.poolVickish(200);
+
+      await seyiToken.transfer(otherAccount, 300);
+
+      // approve contract to spend money from otherAccount which is msg.sender
+      await seyiToken.connect(otherAccount).approve(tokenSwap.target, 200);
+
+      // Swap vickish token to seyitoken
+      const swapSeyi = await tokenSwap.connect(otherAccount).swapSeyiToken(100);
+
+      // check user bal for seyitoken to check if it was swapped successfully
+      const balOfSeyiToken = await tokenSwap.checkUserBalOfseyiToken(
+        otherAccount
+      );
+      const balOfVickishToken = await tokenSwap.checkUserBalOfvickishToken(
+        otherAccount
+      );
+
+      // expect user's bal of seyitoken to be equal the swapped amount
+      expect(balOfVickishToken).to.be.equal(100);
+
+      console.log("balOfSeyiToken", balOfSeyiToken);
+      console.log("balOfVickishToken", balOfVickishToken);
+    });
+  });
 });
