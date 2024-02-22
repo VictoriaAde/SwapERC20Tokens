@@ -11,7 +11,7 @@ describe("TokenSwap", function () {
   // and reset Hardhat Network to that snapshot in every test.
   async function deploySwapContractandTokens() {
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, otherAccount, thirdAccount] = await ethers.getSigners();
 
     const VickishToken = await ethers.getContractFactory("VickishToken");
     const SeyiToken = await ethers.getContractFactory("SeyiToken");
@@ -24,7 +24,14 @@ describe("TokenSwap", function () {
       seyiToken.target
     );
 
-    return { tokenSwap, vickishToken, seyiToken, owner, otherAccount };
+    return {
+      tokenSwap,
+      vickishToken,
+      seyiToken,
+      owner,
+      otherAccount,
+      thirdAccount,
+    };
   }
 
   describe("Deployment", function () {
@@ -119,15 +126,20 @@ describe("TokenSwap", function () {
       await tokenSwap.poolVickish(200);
       await tokenSwap.poolSeyi(200);
 
-      const userBalVickish = await tokenSwap.checkUserBalOfvickishToken(
-        otherAccount
-      );
-
       const swapVickish = tokenSwap.connect(otherAccount).swapVickishToken(100);
 
       await expect(swapVickish).to.be.revertedWith(
-        "You do not have  enougn Vickish tokens for this transaction"
+        "User does not have  enougn Vickish tokens for this transaction"
       );
+    });
+
+    it("Should revert if Transfer of vickishToken to contract failed", async function () {
+      const { tokenSwap, vickishToken, seyiToken, otherAccount, thirdAccount } =
+        await loadFixture(deploySwapContractandTokens);
+
+      const swapVickish = tokenSwap.connect(otherAccount).swapVickishToken(100);
+
+      expect(swapVickish).to.be.revertedWithCustomError;
     });
   });
 });

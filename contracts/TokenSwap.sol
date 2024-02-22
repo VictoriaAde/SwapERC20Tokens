@@ -15,9 +15,9 @@ contract TokenSwap{
 
     function swapVickishToken(uint256 _amount) external  {
         require(vickishToken.balanceOf(address(this)) >= _amount, "Not enough vickishToken in contract");
-        require(vickishToken.balanceOf(msg.sender) > _amount, "You do not have  enougn Vickish tokens for this transaction");
-        require(vickishToken.transferFrom(msg.sender, address(this), _amount + fee), "Transfer of vickishToken failed");
-        require(seyiToken.transfer(msg.sender, _amount), "Transfer of vickishToken failed");
+        require(vickishToken.balanceOf(msg.sender) > _amount, "User does not have  enougn Vickish tokens for this transaction");
+        require(vickishToken.transferFrom(msg.sender, address(this), _amount + fee), "Transfer of vickishToken to contract failed");
+        require(seyiToken.transfer(msg.sender, _amount), "Transfer of seyiToken to user failed");
     } 
     
     function swapSeyiToken(uint256 _amount) external  {
