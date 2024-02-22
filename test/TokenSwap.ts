@@ -177,5 +177,21 @@ describe("TokenSwap", function () {
       console.log("balOfSeyiToken", balOfSeyiToken);
       console.log("balOfVickishToken", balOfVickishToken);
     });
+
+    it("Should revert if not enough seyi token in contract", async function () {
+      const { tokenSwap, vickishToken, seyiToken, otherAccount, owner } =
+        await loadFixture(deploySwapContractandTokens);
+
+      await seyiToken.transfer(otherAccount, 300);
+
+      // approve contract to spend money from otherAccount which is msg.sender
+      await seyiToken.connect(otherAccount).approve(tokenSwap.target, 200);
+
+      const swapSeyi = tokenSwap.connect(otherAccount).swapSeyiToken(100);
+
+      await expect(swapSeyi).to.be.revertedWith(
+        "Not enough seyiToken in contract"
+      );
+    });
   });
 });
