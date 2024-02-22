@@ -133,7 +133,7 @@ describe("TokenSwap", function () {
       );
     });
 
-    it("Should revert if Transfer of vickishToken to contract failed", async function () {
+    it("Should revert if Transfer of vickishToken to contract failed or transfer to user failed", async function () {
       const { tokenSwap, vickishToken, seyiToken, otherAccount, thirdAccount } =
         await loadFixture(deploySwapContractandTokens);
 
@@ -211,6 +211,15 @@ describe("TokenSwap", function () {
       await expect(swapSeyi).to.be.revertedWith(
         "User do not have  enougn Seyi tokens for this transaction"
       );
+    });
+
+    it("Should revert if Transfer of seyiToken to contract failed or transfer to user failed", async function () {
+      const { tokenSwap, vickishToken, seyiToken, otherAccount, thirdAccount } =
+        await loadFixture(deploySwapContractandTokens);
+
+      const swapSeyi = tokenSwap.connect(otherAccount).swapSeyiToken(100);
+
+      expect(swapSeyi).to.be.revertedWithCustomError;
     });
   });
 });

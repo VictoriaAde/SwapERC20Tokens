@@ -24,7 +24,7 @@ contract TokenSwap{
         require(seyiToken.balanceOf(address(this)) >= _amount, "Not enough seyiToken in contract");
         require(seyiToken.balanceOf(msg.sender) > _amount, "User do not have  enougn Seyi tokens for this transaction");
         require(seyiToken.transferFrom(msg.sender, address(this), _amount + fee), "Transfer of vickishToken failed");
-        require(vickishToken.transfer(msg.sender, _amount), "Transfer of vickishToken failed");
+        require(vickishToken.transfer(msg.sender, _amount), "Transfer of vickishToken to user failed");
     }  
 
     function poolVickish(uint256 _amountOfvickishToken ) external {
