@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.19;
 
 import "./IERC20.sol";
 
@@ -15,12 +15,14 @@ contract TokenSwap{
 
     function swapVickishToken(uint256 _amount) external  {
         require(vickishToken.balanceOf(address(this)) >= _amount, "Not enough vickishToken in contract");
+        require(vickishToken.balanceOf(msg.sender) > _amount, "You do not have  enougn Vickish tokens for this transaction");
         require(vickishToken.transferFrom(msg.sender, address(this), _amount + fee), "Transfer of vickishToken failed");
         require(seyiToken.transfer(msg.sender, _amount), "Transfer of vickishToken failed");
     } 
     
     function swapSeyiToken(uint256 _amount) external  {
         require(seyiToken.balanceOf(address(this)) >= _amount, "Not enough seyiToken in contract");
+        require(vickishToken.balanceOf(msg.sender) > _amount, "You do not have  enougn Seyi tokens for this transaction");
         require(seyiToken.transferFrom(msg.sender, address(this), _amount + fee), "Transfer of vickishToken failed");
         require(vickishToken.transfer(msg.sender, _amount), "Transfer of vickishToken failed");
     }  
